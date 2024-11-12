@@ -1,0 +1,97 @@
+<p-toast></p-toast>
+
+<p-card header="Gestión de Notas" styleClass="mb-3">
+    <p class="m-0">
+        Registro de Notas de los estudiantes universitarios de la UPeU
+    </p>
+</p-card>
+
+<p-toolbar class="mb-3">
+    <div class="p-toolbar-group-left">
+        <button pButton type="button" label="Nueva Nota" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></button>
+    </div>
+</p-toolbar>
+
+<p-card header="Listado de Notas" styleClass="mb-3">
+    <p-table *ngIf="notas && notas.length > 0" [value]="notas" [paginator]="true" [rows]="5" [responsiveLayout]="'scroll'" styleClass="p-datatable-gridlines">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>ID</th>
+                <th>Alumno</th>
+                <th>Curso</th>
+                <th>Nota 1</th>
+                <th>Nota 2</th>
+                <th>Nota 3</th>
+                <th>Promedio</th>
+                <th style="width: 10rem">Acciones</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-nota>
+            <tr>
+                <td>{{ nota.id }}</td>
+                <td>{{ nota.alumno.nombres }} {{ nota.alumno.apellidos }}</td>
+                <td>{{ nota.curso.nombre }}</td>
+                <td>{{ nota.nota1 }}</td>
+                <td>{{ nota.nota2 }}</td>
+                <td>{{ nota.nota3 }}</td>
+                <td>{{ nota.promedio | number:'1.2-2' }}</td>
+                <td>
+                    <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-info p-mr-2" (click)="editNota(nota)" tooltip="Editar"></button>
+                    <button pButton icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="deleteNota(nota)" tooltip="Eliminar"></button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <p *ngIf="notas?.length === 0" class="p-text-center p-mt-2">No hay notas para mostrar.</p>
+</p-card>
+
+<p-dialog [(visible)]="escuelaDialog" [modal]="true" [style]="{width: '50vw', maxWidth: '600px'}" header="Detalles de la Nota" [closable]="false" styleClass="p-dialog-rounded p-dialog-shadow-5">
+    <div class="p-fluid">
+        <div class="p-field">
+            <label for="alumno">Alumno</label>
+            <p-dropdown 
+                id="alumno" 
+                [(ngModel)]="nota.alumno.id" 
+                [options]="alumnos" 
+                optionLabel="displayName" 
+                optionValue="id" 
+                filter="true" 
+                placeholder="Selecciona Alumno" 
+                styleClass="w-full p-dropdown-rounded">
+            </p-dropdown>
+        </div>
+
+        <div class="p-field">
+            <label for="curso">Curso</label>
+            <p-dropdown id="curso" [(ngModel)]="nota.curso.id" [options]="cursos" optionLabel="nombre" optionValue="id" filter="true" placeholder="Selecciona Curso" styleClass="w-full">
+            </p-dropdown>
+        </div>
+
+        <div class="p-field">
+            <label for="nota1">Nota 1</label>
+            <input id="nota1" type="number" pInputText [(ngModel)]="nota.nota1" required class="w-full"/>
+        </div>
+
+        <div class="p-field">
+            <label for="nota2">Nota 2</label>
+            <input id="nota2" type="number" pInputText [(ngModel)]="nota.nota2" required class="w-full"/>
+        </div>
+
+        <div class="p-field">
+            <label for="nota3">Nota 3</label>
+            <input id="nota3" type="number" pInputText [(ngModel)]="nota.nota3" required class="w-full"/>
+        </div>
+
+        <div class="p-field">
+            <label for="promedio">Promedio</label>
+            <input id="promedio" type="number" pInputText [(ngModel)]="nota.promedio" disabled class="w-full"/>
+        </div>
+    </div>
+
+    <p-footer>
+        <button pButton type="button" label="Guardar" icon="pi pi-check" class="p-button-success" (click)="saveNota()"></button>
+        <button pButton type="button" label="Cancelar" icon="pi pi-times" class="p-button-secondary" (click)="hideDialog()"></button>
+    </p-footer>
+</p-dialog>
+
+<p-confirmDialog></p-confirmDialog>
